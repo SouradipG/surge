@@ -54,6 +54,8 @@ class WaitingRoomTest extends IntegrationTestBase {
 
         List<Concurrently.Outcome<WaitingRoom.Status>> outcomes = Concurrently.run(1000, i -> room.join(eventId, "u" + i));
 
+        assertThat(outcomes).noneMatch(Concurrently.Outcome::failed);
+
         assertThat(outcomes.stream().map(o -> ((WaitingRoom.Status.Waiting) o.value()).position()).distinct()).hasSize(1000);
         assertThat(redis.opsForZSet().size(RedisKeys.queue(eventId))).isEqualTo(1000);
     }

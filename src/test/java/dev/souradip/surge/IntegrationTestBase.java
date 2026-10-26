@@ -30,7 +30,10 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
         "surge.waiting-room.tick=1h",
         "surge.holds.expiry-poll=1h",
         "surge.reconcile.interval=1h",
-        "spring.datasource.hikari.connection-timeout=30000"
+        "spring.datasource.hikari.connection-timeout=30000",
+        // The tests fire a thousand Redis calls at once over one connection on a shared CI
+        // runner. Production keeps the tight 500 ms.
+        "spring.data.redis.timeout=5s"
 })
 public abstract class IntegrationTestBase {
 
