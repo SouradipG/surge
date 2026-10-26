@@ -33,7 +33,14 @@ public class InventoryReconciler {
 
     @Scheduled(fixedDelayString = "${surge.reconcile.interval}")
     void all() {
-        for (Long eventId : jdbc.sql("select event_id from inventory").query(Long.class).list()) {
+        List<Long> eventIds;
+        try {
+            eventIds = jdbc.sql("select event_id from inventory").query(Long.class).list();
+        } catch (RuntimeException e) {
+            log.warn("reconcile pass skipped, database unavailable: {}", e.toString());
+            return;
+        }
+        for (Long eventId : eventIds) {
             try {
                 reconcile(eventId);
             } catch (RuntimeException e) {

@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,7 @@ public class AdmissionTokens {
     private final SurgeProperties.WaitingRoom config;
     private final Clock clock;
 
+    @Autowired
     AdmissionTokens(SurgeProperties properties) {
         this(properties, Clock.systemUTC());
     }
