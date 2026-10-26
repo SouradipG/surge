@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: surge
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/surge
+    username: surge
+    password: surge
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 3000
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 500ms
+
+surge:
+  rate-limit:
+    # Token bucket per user and per IP: bursts up to capacity, then refill-per-second.
+    capacity: 20
+    refill-per-second: 10
+  waiting-room:
+    admit-per-tick: 100
+    tick: 1s
+    token-ttl: 10m
+    # Override in every real environment.
+    secret: change-me-in-every-environment
+  holds:
+    ttl: 5m
+    max-per-user: 4
+    expiry-poll: 500ms
+  cache:
+    ttl: 2s
+    local-ttl: 250ms
+  shedding:
+    max-in-flight: 400
+    # Browse traffic may use at most this share of in flight capacity. The rest
+    # is kept for people who are already checking out.
+    browse-share: 0.6
+  reconcile:
+    interval: 30s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
